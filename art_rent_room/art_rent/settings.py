@@ -88,6 +88,7 @@ WSGI_APPLICATION = 'art_rent.wsgi.application'
 
 
 # Database
+
 DATABASES = {
     'default': {
         'ENGINE': os.getenv('DB_ENGINE'),

@@ -18,11 +18,16 @@ from django.contrib import admin
 from django.urls import path, include
 from django.urls import re_path as url
 from backend_api.views import *
-
+from django.urls import path
+from users.views import RegisterView, LoginView, UserView, LogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', UserRentView.as_view(), name='oh shit'),
+    path('users', UserRentView.as_view(), name='oh shit'),
+    path('', DeviceRentView.as_view(), name='oh shit'),
     path('api/', include('users.urls')),
-
+    path('registration', RegisterView.as_view()),
+    path('login', LoginView.as_view()),
+    path('user', UserView.as_view()),
+    path('logout', LogoutView.as_view())
 ]
