@@ -21,6 +21,7 @@ from backend_api.views import *
 from django.urls import path
 from users.views import RegisterView, LoginView, UserView, LogoutView
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users', UserRentView.as_view(), name='oh shit'),
@@ -29,5 +30,8 @@ urlpatterns = [
     path('registration', RegisterView.as_view()),
     path('login', LoginView.as_view()),
     path('user', UserView.as_view()),
-    path('logout', LogoutView.as_view())
+    path('logout', LogoutView.as_view()),
+    path('basket/', BasketAPIView.as_view(), name='basket-list'),
+    path('basket/<int:pk>/', BasketDetailAPIView.as_view(), name='basket-detail'),
+    path('basket/clear/', ClearBasketAPIView.as_view(), name='basket-clear'),
 ]

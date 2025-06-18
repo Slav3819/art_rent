@@ -1,13 +1,27 @@
 from rest_framework import serializers
-from .models import DeviceRent
-from .models import UserRent
+from .models import *
 
 class UserRentSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserRent
         fields = ['name', 'title']
 
+
 class DeviceRentSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeviceRent
-        fields = ['title', 'img', 'desc', 'category', 'price']
+        fields = '__all__'
+
+
+class BasketSerializer(serializers.ModelSerializer):
+    device = DeviceRentSerializer()  # Вложенный сериализатор
+    class Meta:
+        model = Basket
+        fields = '__all__'
+
+class BasketNotAuthSerializer(serializers.ModelSerializer):
+    device = DeviceRentSerializer()  # Вложенный сериализатор
+    class Meta:
+        model = BasketNotAuth
+        fields = '__all__'
+

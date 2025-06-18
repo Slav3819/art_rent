@@ -80,7 +80,7 @@ class UserView(APIView):
 
 
 class LogoutView(APIView):
-    def post(self,request):
+    def get(self,request):
         response = Response()
         response.delete_cookie('token')
         response.data = {
