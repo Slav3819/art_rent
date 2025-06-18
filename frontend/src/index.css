@@ -1,13 +1,537 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+    background: #fff;
+    color: #222;
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+}
+
+.wrapper {
+    width: 1280px;
+    margin: 50px auto;
+}
+
+header {
+    position: relative;
+}
+
+header .logo {
+    font-weight: 600;
+    font-size: 20px;
+}
+
+header ul.nav {
+    float: right;
+    list-style: none;
+}
+
+header ul.nav li {
+    display: inline;
+    margin-left: 25px;
+    cursor: pointer;
+    transition: opacity 500ms ease;
+}
+
+header ul.nav li:hover {
+    opacity: 0.5;
+}
+
+header .shop-cart-button {
+    float: right;
+    cursor: pointer;
+    transition: color, transform 500ms ease;
+}
+
+header .shop-cart-button:hover,
+header .shop-cart-button.active {
+    color: #e46969;
+    transform: scale(1.5);
+}
+
+header .shop-cart {
+    z-index: 1000;
+    position: absolute;
+    top:30px;
+    right: 0;
+    width: 450px;
+    background: #fafafa;
+    -webkit-box-shadow: 14px 20px 10px -2px rgba(34, 60, 80, 0.2);
+    -moz-box-shadow: 14px 20px 10px -2px rgba(34, 60, 80, 0.2);
+    box-shadow: 14px 20px 10px -2px rgba(34, 60, 80, 0.2);
+    padding: 20px;
+    padding-bottom: 0;
+}
+
+header .shop-cart .empty h2{
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+header .shop-cart .item{
+    width: 100%;
+    float: left;
+    margin-bottom: 20px;
+
+}
+header .shop-cart .item img{
+    width: 70px;
+    float: left;
+    margin-right: 20px;
+}
+
+header .shop-cart .item h2{
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+header .shop-cart .item p{
+    color: #797979;
+    font-weight: 600;
+}
+
+header .shop-cart .item .delete-icon {
+    color: #ca5252;
+    float: right;
+    position: relative;
+    top: -25px;
+    cursor: pointer;
+    transition: color, transform 500ms ease ;
+}
+
+header .shop-cart .item .delete-icon:hover {
+    color: #eb1313;
+    transform: scale(1.5);
+}
+
+header .shop-cart .summa {
+    float: left;
+    width: 100%;
+    font-weight: 600;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+header {
+    background: #f8f9fa;
+    padding: 20px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  
+  
+.nav {
+display: flex;
+align-items: center; /* Выравниваем элементы по центру */
+list-style: none;
+margin: 0;
+padding: 0;
+gap: 20px; /* Расстояние между пунктами меню */
+}
+
+.nav li {
+display: flex;
+align-items: center;
+}
+
+.hd-button-cab {
+background: none;
+border: none;
+cursor: pointer;
+color: #333;
+font-size: 16px;
+padding: 5px 10px;
+transition: all 0.3s;
+}
+
+.hd-button-cab:hover {
+color: #007bff;
+text-decoration: underline;
+}
+
+/* Если нужно, чтобы кнопки были ближе друг к другу */
+.nav li div {
+display: flex;
+gap: 10px;
+}
+
+/* Стили для корзины */
+.shop-cart-button {
+cursor: pointer;
+font-size: 24px;
+color: #333;
+transition: all 0.3s;
+}
+
+.shop-cart-button:hover {
+color: #007bff;
+}
+
+.shop-cart-button.active {
+color: #007bff;
+}
+
+.logo {
+font-weight: bold;
+font-size: 24px;
+margin-right: 20px;
+}
+
+div.presentation {
+    background: url('./img/dri.jpg') no-repeat;
+    width: 100%;
+    height: 500px;
+    background-size: cover;
+    background-position: center center;
+    background-blend-mode: multiply;
+    background-color: #bcbcbc;
+    position: relative;
+
+}
+
+div.presentation::after {
+    content: 'Здесь все от аренде инструмента';
+    position: absolute;
+    top: 100px;
+    left: 50px;
+    width: 300px;
+    font-size: 40px;
+    font-weight: 600;
+    color: #fff;
+
+}
+
+div.presentation::before {
+    content: 'в одном месте';
+    position: absolute;
+    top: 250px;
+    left: 50px;
+    width: 300px;
+    font-size: 15x;
+    font-weight: 300;
+    color: #fff;
+
+}
+
+.categories div {
+    display: inline-block;
+    background: #f2f2f2;
+    border-radius: 50px;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    margin-right: 15px;;
+    cursor: pointer;
+    border: 1px  solid transparent;
+    transition:  all 500ms ease;
+}
+.categories div:hover{
+    border-color: #797979;
+    transform: scale(1.1);
+}
+
+.full-item{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+    overflow: auto;
+}
+
+.full-item > div {
+    width: 600px;
+    position: relative;
+    margin: 10% auto;
+    padding: 40px 30px;
+    background: #fff;
+    border-radius: 1px;
+}
+
+main {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+main .item {
+    display: inline;
+    width: 30%;
+    height: 500px;
+    margin-bottom: 50px;
+    background: #f5f5f5;
+    overflow: hidden;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+
+main .item img, 
+.full-item .item img{
+    max-width: 100%;
+    border-radius: 10px 10px 0 0;
+    transition: transform 500ms ease;
+    cursor: pointer;
+}
+
+main .item img:hover, 
+.full-item .item img:hover  {
+    transform: scale(1.05);
+
+}
+
+main h2, .full-item h2,
+main p,.full-item p,
+main b, .full-item b {
+    margin: 10px 20px;
+    color: #333;
+}
+
+main b, .full-item b {
+    color: #5fa36a;
+}
+
+main .add-to-card,
+.full-item .add-to-card {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    background: #63ab63;
+    width: 150px;
+    height: 35px;
+    text-align: center;
+    line-height: 35px;
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+main .add-to-card:hover,
+.full-item .add-to-card:hover {
+    transform: scale(1.1) translateY(-5px);
+}
+
+main .pres,
+.full-item .pres{
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    background: #63ab63;
+    width: 150px;
+    height: 35px;
+    text-align: center;
+    line-height: 35px;
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+main .pres:hover,
+.full-item .pres:hover {
+    transform: scale(1.1) translateY(-5px);
+}
+
+
+.cont-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* чтобы форма была по центру даже если контента мало */
+    padding: 20px;
+  }
+  
+  .cont-card {
+    width: 100%;
+    max-width: 500px; /* ограничиваем ширину карточки */
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* небольшая тень */
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* отступы между полями */
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .btn {
+    width: 100%;
+    padding: 10px;
+  }
+
+footer {
+    text-align: center;
+    margin-top: 100px ;
+}
+
+.basket-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.empty-cart {
+  text-align: center;
+  padding: 40px;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.empty-cart p {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.continue-shopping {
+  padding: 10px 20px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.cart-items {
+  margin-bottom: 30px;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  position: relative;
+}
+
+.item-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+.item-details {
+  flex-grow: 1;
+}
+
+.item-details h3 {
+  margin: 0 0 10px 0;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.quantity-controls button {
+  width: 30px;
+  height: 30px;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.quantity-controls span {
+  margin: 0 15px;
+}
+
+.item-total {
+  font-weight: bold;
+  margin: 0 20px;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #ff5252;
+}
+
+.cart-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.total-summary {
+  font-size: 18px;
+}
+
+.total-summary span:last-child {
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.checkout-btn {
+  padding: 12px 30px;
+  background: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Добавьте эти стили в ваш CSS файл */
+.open-card-btn {
+  background-color: #4CAF50; /* Зеленый цвет */
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin-left: 15px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.open-card-btn:hover {
+  background-color: #45a049; /* Темно-зеленый при наведении */
+  transform: translateY(-1px);
+}
+
+.open-card-btn:active {
+  transform: translateY(1px);
+}
+
+.open-card-btn a {
+  color: white;
+  text-decoration: none;
 }
