@@ -17,9 +17,8 @@ const DevicePage = observer(() => {
     const fetchDevice = async () => {
       try {
         const response = await device();
-        items.setItems(response.data);
-        
-        const foundDevice = response.data.find(el => el.id.toString() === id);
+        items.setItems(response.data.results);
+        const foundDevice = response.data.results.find(el => el.id.toString() === id);
         if (foundDevice) {
           setCurrentDevice(foundDevice);
         } else {
@@ -32,18 +31,19 @@ const DevicePage = observer(() => {
         setLoading(false);
       }
     };
-
     fetchDevice();
   }, [id, items]);
 
-  const addToOrder = () => {
-    if (!currentDevice) return;
-    
-    const isInArray = items.isOrders.some(el => el.id === currentDevice.id);
-    if (!isInArray) {
-      items.setOrders([...items.isOrders, currentDevice]);
-    }
-  };
+  
+
+  const addToOrder = (item) => {
+  const isInArray = items.isOrders.some(el => el.id === item.id);
+  if (!isInArray) {
+    const newOrders = [...items.isOrders, item];
+    items.setOrders(newOrders);
+    localStorage.setItem('cartItems', JSON.stringify(newOrders));
+  }
+};
 
   if (loading) {
     return (
@@ -105,7 +105,7 @@ const DevicePage = observer(() => {
           <h1 className={styles.title}>{currentDevice.name}</h1>
           
           <div className={styles.priceSection}>
-            <span className={styles.price}>{currentDevice.price} ₽</span>
+            <span className={styles.price}>{currentDevice.price} BYN</span>
             {currentDevice.oldPrice && (
               <span className={styles.oldPrice}>{currentDevice.oldPrice} ₽</span>
             )}
@@ -126,21 +126,25 @@ const DevicePage = observer(() => {
             <ul>
               {currentDevice.info?.map((info, index) => (
                 <li key={index}>
-                  <strong>{info.title}:</strong> {info.description}
+                  <strong>{info.title}:</strong> {info.desc}
                 </li>
               ))}
             </ul>
           </div>
+          
+          {items.isOrders.some(el => el.id === currentDevice.id) 
+              ? <button 
+              className={styles.addToCartButton} 
+              onClick={() => navigate('/basket')}
+              >Перейти в корзину
+              </button>
+              : 
+              <button 
+              className={styles.addToCartButton} 
+              onClick={() => addToOrder(currentDevice)}
+              >Добавить в корзину</button>
+              }
 
-          <button 
-            className={styles.addToCartButton}
-            onClick={addToOrder}
-            disabled={items.isOrders.some(el => el.id === currentDevice.id)}
-          >
-            {items.isOrders.some(el => el.id === currentDevice.id) 
-              ? 'Уже в корзине' 
-              : 'Добавить в корзину'}
-          </button>
         </div>
       </div>
     </div>

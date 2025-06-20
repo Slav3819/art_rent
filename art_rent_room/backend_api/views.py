@@ -6,6 +6,27 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 6  # Количество элементов на странице
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+    def get_paginated_response(self, data):
+        return Response({
+            'links': {
+                'next': self.get_next_link(),
+                'previous': self.get_previous_link()
+            },
+            'count': self.page.paginator.count,
+            'total_pages': self.page.paginator.num_pages,  # Добавляем общее количество страниц
+            'current_page': self.page.number,  # Добавляем текущую страницу
+            'results': data,
+            'page_size': self.get_page_size(self.request)  # Добавляем текущий размер страницы
+        })
+
 
 # Create your views here.
 class UserRentView(APIView):
@@ -26,17 +47,11 @@ class UserRentView(APIView):
 
 class DeviceRentView(APIView):
     def get(self, request):
-        output = [
-            {
-                "id": output.id,
-                "title": output.title,
-                "img": output.img,
-                "desc": output.desc,
-                "category": output.category,
-                "price": output.price
-            } for output in DeviceRent.objects.all()
-        ]
-        return Response(output)
+        paginator = StandardResultsSetPagination()
+        queryset = DeviceRent.objects.all()
+        result_page = paginator.paginate_queryset(queryset, request)
+        serializer = DeviceRentSerializer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
         serializer = DeviceRentSerializer(data=request.data)

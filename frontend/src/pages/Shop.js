@@ -3,34 +3,47 @@ import Items from '../components/Items';
 import Categories from '../components/Categories';
 import ShowFullItem from '../components/ShowFullItem';
 import Slider from '../components/Slider';
-import { device } from '../http/deviceApi';
+import { devicePage } from '../http/deviceApi';
 import { observer } from 'mobx-react-lite';
 import { Context } from '../index';
+import { useSearchParams } from 'react-router-dom';
 
 const Shop = observer(() => {
   const [currentItems, setCurrentItems] = useState([]);
   const [showFullItem, setShowFullItem] = useState(false);
   const [fullItem, setFullItem] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
   const {items} = useContext(Context);
 
-  // Восстановление корзины из localStorage при загрузке
+  
+
   useEffect(() => {
     const savedOrders = localStorage.getItem('cartItems');
     if (savedOrders) {
       items.setOrders(JSON.parse(savedOrders));
     }
+    fetchItems();
+  }, [currentPage]);
 
-    device()
+
+  const fetchItems = () => {
+    setLoading(true);
+    devicePage(currentPage)
       .then(res => {
-        setCurrentItems(res.data);
-        items.setItems(res.data);
+        setCurrentItems(res.data.results);
+        items.setItems(res.data.results);
+        setTotalPages(res.data.total_pages);
       })
       .catch(err => {
         console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-  }, []);
+  };
 
-  // Сохранение корзины в localStorage при изменении
   useEffect(() => {
     localStorage.setItem('cartItems', JSON.stringify(items.isOrders));
   }, [items.isOrders]);
@@ -55,6 +68,13 @@ const Shop = observer(() => {
     }
   };
 
+  const handlePageChange = (newPage) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="shop-container">
       <div className='wrapper'>
@@ -64,11 +84,34 @@ const Shop = observer(() => {
             <Categories chooseCategory={chooseCategory} />
           </div>
           <div className="items-container">
-            <Items 
-              onShowItem={onShowItem} 
-              items={currentItems} 
-              onAdd={addToOrder} 
-            />
+            {loading ? (
+              <div>Loading...</div>
+            ) : (
+              <>
+                <Items 
+                  onShowItem={onShowItem} 
+                  items={currentItems} 
+                  onAdd={addToOrder} 
+                />
+                <div className="pagination">
+                  <button 
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    Предыдущая
+                  </button>
+                  
+                  <span>Страница {currentPage} из {totalPages}</span>
+                  
+                  <button 
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    Следующая
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
         {showFullItem && (

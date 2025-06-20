@@ -25,7 +25,6 @@ const Login =  observer( () => {
       } else {
         data = await registration(name, email, password);
       }
-      // user.setUser(user)
       user.setIsAuth(true)
       navigate(SHOP_ROUTE)
     } catch (e){

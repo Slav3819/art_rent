@@ -8,7 +8,6 @@ const Basket = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
-  // Загрузка корзины при монтировании
   useEffect(() => {
     const savedCart = localStorage.getItem('cartItems');
     if (savedCart) {
