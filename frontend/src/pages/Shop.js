@@ -8,11 +8,9 @@ import { observer } from 'mobx-react-lite';
 import { Context } from '../index';
 
 const Shop = observer(() => {
-  const [orders, setOrders] = useState([]);
   const [currentItems, setCurrentItems] = useState([]);
   const [showFullItem, setShowFullItem] = useState(false);
   const [fullItem, setFullItem] = useState({});
-  const [details, setDetails] = useState([]);
   const {items} = useContext(Context);
 
   // Восстановление корзины из localStorage при загрузке

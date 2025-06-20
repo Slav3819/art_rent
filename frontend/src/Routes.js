@@ -1,4 +1,4 @@
-import { ADMIN_ROUTE, BASKET_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, DEVICE_ROUTE, SHOP_ROUTE, CABINET_ROUTE, ABOUT_ROUTE, CONTACT_ROUTE } from './utils/consts';
+import { ADMIN_ROUTE, BASKET_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, DEVICE_ROUTE, SHOP_ROUTE, CABINET_ROUTE, ABOUT_ROUTE, CONTACT_ROUTE, CHECKOUT_ROUTE, CHECKOUT_SUCCESS_ROUTE } from './utils/consts';
 import Admin from './pages/Admin';
 import Basket from './pages/Basket';
 import Shop from './pages/Shop';
@@ -7,6 +7,9 @@ import Auth from './pages/Auth';
 import Cabinet from './pages/Cabinet';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import Checkout from './pages/Checkout';
+import OrderSuccess from './pages/OrderSuccess';
+
 
 
 
@@ -24,7 +27,15 @@ export const authRoutes = [
     {
         path: CABINET_ROUTE,
         component: Cabinet
-    }
+    },
+    {
+        path: CHECKOUT_ROUTE,
+        component: Checkout
+    },
+    {
+        path: CHECKOUT_SUCCESS_ROUTE,
+        component: OrderSuccess
+    },
     
 ]
 

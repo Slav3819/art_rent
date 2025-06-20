@@ -21,7 +21,15 @@ export class Categories extends Component {
                     key: 'tс',
                     name: 'Косилки'
                 },
-
+                {
+                    key: 'gz',
+                    name: 'Гайковерты'
+                },
+                {
+                    key: 'pf',
+                    name: 'Перфораторы'
+                },
+                
             ]
         }
 

@@ -2,10 +2,7 @@ import React, { useContext, useState } from 'react'
 import { FaShoppingCart } from "react-icons/fa";
 import Order from './Order'
 import { Context } from '../index';
-import {Button} from 'react-bootstrap'
 import { observer } from 'mobx-react-lite';
-import { Link, useNavigate } from 'react-router-dom'
-import { LOGIN_ROUTE, SHOP_ROUTE } from '../utils/consts'
 import { logout } from '../http/userApi';
 
 
@@ -34,7 +31,6 @@ const showNothing = () => {
 const Header = (props) => {
   let [cartOpen, setCartOpen] = useState(false)
   const {user} = useContext(Context)
-  const {items} = useContext(Context)
 
 
 

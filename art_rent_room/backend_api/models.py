@@ -17,5 +17,4 @@ class Basket(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     device = models.ForeignKey(DeviceRent, on_delete=models.CASCADE)
 
-class BasketNotAuth(models.Model):
-    device = models.ForeignKey(DeviceRent, on_delete=models.CASCADE)
+

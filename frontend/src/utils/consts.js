@@ -7,4 +7,5 @@ export const DEVICE_ROUTE = '/device'
 export const CABINET_ROUTE = '/cabinet'
 export const ABOUT_ROUTE = '/about'
 export const CONTACT_ROUTE = '/contact'
-
+export const CHECKOUT_ROUTE = '/checkout'
+export const CHECKOUT_SUCCESS_ROUTE = '/order-success'

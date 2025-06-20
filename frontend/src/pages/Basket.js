@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Context } from '../index';
 import { useNavigate } from 'react-router-dom';
+import { RxMargin } from 'react-icons/rx';
 
 const Basket = () => {
   const { items } = useContext(Context);
@@ -61,13 +62,14 @@ const Basket = () => {
               <div key={item.id} className="cart-item">
                 <img 
                   src={"./img/" + item.img} 
-                  alt={item.name} 
+                  alt={item.title} 
                   className="item-image"
                 />
                 <div className="item-details">
-                  <h3>{item.name}</h3>
-                  <p>Цена: {item.price} BYN</p>
+                  <h3>{item.title}</h3>
+                  <p>Цена: {item.price}  BYN/сутки</p>
                   <div className="quantity-controls">
+                  <p>Количество суток</p>
                     <button 
                       onClick={() => updateQuantity(item.id, (item.quantity || 1) - 1)}
                       disabled={(item.quantity || 1) <= 1}
@@ -98,7 +100,10 @@ const Basket = () => {
               <span>Общая сумма:</span>
               <span>{calculateTotal().toFixed(2)} BYN</span>
             </div>
-            <button className="checkout-btn">
+            <button 
+              className="checkout-btn"
+              onClick={() => navigate('/checkout')}
+            >
               Оформить заказ
             </button>
           </div>

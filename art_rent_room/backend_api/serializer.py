@@ -19,9 +19,5 @@ class BasketSerializer(serializers.ModelSerializer):
         model = Basket
         fields = '__all__'
 
-class BasketNotAuthSerializer(serializers.ModelSerializer):
-    device = DeviceRentSerializer()  # Вложенный сериализатор
-    class Meta:
-        model = BasketNotAuth
-        fields = '__all__'
+
 
