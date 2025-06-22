@@ -6,7 +6,6 @@ import Slider from '../components/Slider';
 import { devicePage } from '../http/deviceApi';
 import { observer } from 'mobx-react-lite';
 import { Context } from '../index';
-import { useSearchParams } from 'react-router-dom';
 
 const Shop = observer(() => {
   const [currentItems, setCurrentItems] = useState([]);

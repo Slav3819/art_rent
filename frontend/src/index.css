@@ -199,7 +199,7 @@ div.presentation {
 }
 
 div.presentation::after {
-    content: 'Здесь все от аренде инструмента';
+    content: 'Здесь все об аренде инструмента';
     position: absolute;
     top: 100px;
     left: 50px;
@@ -300,6 +300,23 @@ main b, .full-item b {
 
 main b, .full-item b {
     color: #5fa36a;
+}
+
+.full-item .close-to-card {
+    position: relative;
+    top: -45px;
+    left: 610px;
+    border: 10px solid #d4d0d0;
+    cursor: pointer;    
+    width: 10px;
+    height: 10px;
+}
+
+.full-item .close-to-card::after {
+    font-size: 40px;
+    font-weight: 600;
+    color: #000000;
+
 }
 
 main .add-to-card,

@@ -16,9 +16,9 @@ const showOrders = (props) => {
       <Order key={el.id} item={el} onDelete={props.onDelete} />
     ))}
     
-    <p className='summa'> Сумма: {new Intl.NumberFormat().format(summa)} BYN</p>
-    <div><button className='open-card-btn'> <a href="/basket">Открыть корзину</a></button>
-      <button className='open-card-btn'> <a href="/checkout">Оформить заказ</a></button></div>
+    <p className='summa'> Сумма: {new Intl.NumberFormat().format(summa)} BYN <button className='open-card-btn'> <a href="/basket">Открыть корзину</a></button></p>
+    
+      
   </div>)
 }
 
@@ -40,7 +40,6 @@ const Header = (props) => {
     logout()
     user.setUser({})
     user.setIsAuth(false)
-
   }
   
   return (
@@ -66,7 +65,7 @@ const Header = (props) => {
               }
               </li>
             </ul>           
-            <FaShoppingCart onClick={() => setCartOpen(cartOpen = !cartOpen)} auth={user.isAuth} className={`shop-cart-button ${cartOpen && 'active'}`}/>
+            <FaShoppingCart onClick={() => setCartOpen(cartOpen = !cartOpen)}  className={`shop-cart-button ${cartOpen && 'active'}`}/>
 
             {cartOpen &&  (
               <div className='shop-cart'>

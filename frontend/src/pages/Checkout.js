@@ -167,7 +167,7 @@ const Checkout = () => {
                   checked={formData.paymentMethod === 'card'}
                   onChange={handleInputChange}
                 />
-                Картой онлайн
+                Картой
               </label>
             </div>
           </div>

@@ -12,17 +12,11 @@ import OrderSuccess from './pages/OrderSuccess';
 
 
 
-
-
 // Доспупно только авторизованым
 export const authRoutes = [
     {
         path: ADMIN_ROUTE,
         component: Admin
-    },
-    {
-        path: BASKET_ROUTE,
-        component: Basket
     },
     {
         path: CABINET_ROUTE,
@@ -44,6 +38,10 @@ export const publicRoutes = [
     {
         path: SHOP_ROUTE,
         component: Shop
+    },
+    {
+        path: BASKET_ROUTE,
+        component: Basket
     },
     {
         path: LOGIN_ROUTE,

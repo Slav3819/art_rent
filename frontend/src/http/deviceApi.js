@@ -17,3 +17,4 @@ export const device = async () => {
      const response = await $host.get('')
      return response
 }
+

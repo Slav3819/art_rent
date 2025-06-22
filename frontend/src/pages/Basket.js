@@ -5,6 +5,8 @@ import { RxMargin } from 'react-icons/rx';
 
 const Basket = () => {
   const { items } = useContext(Context);
+  const { user } = useContext(Context);
+
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
@@ -99,12 +101,21 @@ const Basket = () => {
               <span>Общая сумма:</span>
               <span>{calculateTotal().toFixed(2)} BYN</span>
             </div>
-            <button 
-              className="checkout-btn"
-              onClick={() => navigate('/checkout')}
-            >
-              Оформить заказ
-            </button>
+            {user.isAuth ?
+              <button 
+                className="checkout-btn"
+                onClick={() => navigate('/checkout')}
+              >
+                Оформить заказ
+              </button>
+            :  
+              <button 
+                className="checkout-btn"
+                onClick={() => navigate('/login')}
+              >
+                Войти
+              </button>
+            }
           </div>
         </>
       )}

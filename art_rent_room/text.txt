@@ -1,0 +1,31 @@
+{
+    "customerInfo": {
+        "name": "вфывфы",
+        "phone": "12ц123123",
+        "address": "ул. Советская д.12, кв. 32",
+        "email": "slav3819a@yandex.ru",
+        "paymentMethod": "card",
+        "comments": "йцйцй"
+    },
+    "orderItems": [
+        {
+            "id": 2,
+            "title": "УШМ",
+            "img": "2.jpg",
+            "desc": "Описание",
+            "category": "ts",
+            "price": 12.1,
+            "quantity": 3
+        },
+        {
+            "id": 5,
+            "title": "Гайковерт",
+            "img": "5.jpg",
+            "desc": "Описание",
+            "category": "gz",
+            "price": 18.3,
+            "quantity": 2
+        }
+    ],
+    "total": 72.9
+}
