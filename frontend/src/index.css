@@ -25,7 +25,13 @@ header {
     position: relative;
 }
 
-header .logo {
+header span.logo {
+    font-weight: 600;
+    font-size: 20px;
+    margin: 20px;
+}
+
+header .logo  s{
     font-weight: 600;
     font-size: 20px;
 }

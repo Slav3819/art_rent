@@ -27,11 +27,7 @@ import './Cabinet.css'; // Создадим отдельный файл стил
 
 const Cabinet = () => {
   const [activeTab, setActiveTab] = useState('profile');
-  const [profile, setProfile] = useState({
-    name: 'Иван Иванов',
-    email: 'user@example.com',
-    phone: '+375 (29) 123-45-67'
-  });
+  const [profile, setProfile] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +46,6 @@ const Cabinet = () => {
         setProfile(res)
         const response = await ordersUser();
         setOrders(response.data);
-        console.log(res)
       } catch (err) {
         setError('Ошибка загрузки заказов');
         console.error(err);
@@ -63,6 +58,7 @@ const Cabinet = () => {
 
   const handleProfileSave = () => {
     setIsEditing(false);
+    
     // API запрос на сохранение данных
   };
 
@@ -75,7 +71,6 @@ const Cabinet = () => {
   }
 
   const dateCreate = (date_create) => {
-    console.log(date_create)
     return new Date(date_create).toLocaleDateString('ru-RU')
   } 
 
@@ -166,10 +161,29 @@ const Cabinet = () => {
 
                   <Form className="profile-form">
                     <Form.Group className="mb-3 form-group-custom">
-                      <Form.Label>Имя</Form.Label>
+                      <Form.Label>Логин</Form.Label>
                       <Form.Control
                         value={profile.name}
                         onChange={(e) => setProfile({...profile, name: e.target.value})}
+                        disabled={!isEditing}
+                        className="form-control-custom"
+                      />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3 form-group-custom">
+                      <Form.Label>Фамилия</Form.Label>
+                      <Form.Control
+                        value={profile.last_name}
+                        onChange={(e) => setProfile({...profile, last_name: e.target.value})}
+                        disabled={!isEditing}
+                        className="form-control-custom"
+                      />
+                    </Form.Group>
+                    <Form.Group className="mb-3 form-group-custom">
+                      <Form.Label>Имя</Form.Label>
+                      <Form.Control
+                        value={profile.first_name}
+                        onChange={(e) => setProfile({...profile, first_name: e.target.value})}
                         disabled={!isEditing}
                         className="form-control-custom"
                       />
