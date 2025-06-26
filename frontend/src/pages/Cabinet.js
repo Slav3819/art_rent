@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ordersUser } from '../http/userApi';
+import { ordersUser, check } from '../http/userApi';
 import { 
   Container, 
   Row, 
@@ -46,8 +46,11 @@ const Cabinet = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
+        const res = await check();
+        setProfile(res)
         const response = await ordersUser();
         setOrders(response.data);
+        console.log(res)
       } catch (err) {
         setError('Ошибка загрузки заказов');
         console.error(err);
