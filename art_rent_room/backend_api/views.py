@@ -1,13 +1,112 @@
-from django.shortcuts import render
 from rest_framework.views import APIView
 from .models import UserRent, DeviceRent, Basket
 from .serializer import UserRentSerializer, DeviceRentSerializer, BasketSerializer
-from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
+from rest_framework import generics, status, permissions
+from rest_framework.exceptions import AuthenticationFailed, PermissionDenied
 from rest_framework.response import Response
+from .models import Order
+from .authentication import get_user_from_token
+from users.models import User
+from django.conf import settings
+from .serializer import (
+    OrderCreateSerializer,
+    OrderSerializer,
+    OrderStatusSerializer
+)
+
+class OrderCreateView(APIView):
+    def post(self, request):
+        try:
+            user = get_user_from_token(request)
+        except AuthenticationFailed as e:
+            return Response({'detail': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Добавляем email пользователя, если не указан
+        if 'customerInfo' in request.data and 'email' not in request.data['customerInfo']:
+            request.data['customerInfo']['email'] = user.email
+
+        serializer = OrderCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Добавляем пользователя к данным заказа
+        validated_data = serializer.validated_data
+        validated_data['user'] = user
+
+        order = serializer.save()
+
+        response_serializer = OrderSerializer(order)
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+
+class OrderListView(APIView):
+    def get(self, request):
+        try:
+            user = get_user_from_token(request)
+        except AuthenticationFailed as e:
+            return Response({'detail': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
+        if user.is_staff:
+            orders = Order.objects.all().order_by('-created_at')
+        else:
+            orders = Order.objects.filter(user=user).order_by('-created_at')
+
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data)
+
+class OrderDetailView(APIView):
+    def get(self, request, pk):
+        try:
+            user = get_user_from_token(request)
+        except AuthenticationFailed as e:
+            return Response({'detail': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            if user.is_staff:
+                order = Order.objects.get(pk=pk)
+            else:
+                order = Order.objects.get(pk=pk, user=user)
+        except Order.DoesNotExist:
+            return Response(
+                {'detail': 'Заказ не найден'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = OrderSerializer(order)
+        return Response(serializer.data)
+
+class OrderStatusUpdateView(APIView):
+
+    def patch(self, request, pk):
+        try:
+            user = get_user_from_token(request)
+        except AuthenticationFailed as e:
+            return Response({'detail': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
+        if not user.is_staff:
+            return Response(
+                {'detail': 'Недостаточно прав'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        try:
+            order = Order.objects.get(pk=pk)
+        except Order.DoesNotExist:
+            return Response(
+                {'detail': 'Заказ не найден'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = OrderStatusSerializer(order, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response({
+            'status': 'success',
+            'message': 'Статус заказа обновлен',
+            'data': OrderSerializer(order).data
+        })
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 6  # Количество элементов на странице

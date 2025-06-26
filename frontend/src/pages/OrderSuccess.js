@@ -12,7 +12,7 @@ const OrderSuccess = () => {
         className="back-to-shop"
         onClick={() => navigate('/shop')}
       >
-        Вернуться в магазин
+        Вернуться на главную
       </button>
     </div>
   );

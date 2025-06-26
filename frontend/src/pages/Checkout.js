@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Context } from '../index';
 import { useNavigate } from 'react-router-dom';
+import { orderSuccess } from '../http/deviceApi';
+
 
 const Checkout = () => {
   const { items } = useContext(Context);
@@ -39,16 +41,27 @@ const Checkout = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     // добавить логику дабавления заказа в базу
+    try {
+          let data;
+          data = orderSuccess(formData, items.isOrders, calculateTotal());
+
+        } catch (e){
+          alert(e.response.data.message)
+        }
+
     console.log('Order submitted:', {
       customerInfo: formData,
       orderItems: items.isOrders,
       total: calculateTotal()
     });
     
+
+
+
     items.setOrders([]);
     localStorage.removeItem('cartItems');
-    
     navigate('/order-success');
   };
 

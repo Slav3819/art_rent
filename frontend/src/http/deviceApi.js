@@ -18,3 +18,28 @@ export const device = async () => {
      return response
 }
 
+
+export const orderSuccess = async (customerInfo, orderItems, total) => {
+  try {
+    const response = await $host.post('/api/orders/', {
+      customerInfo,
+      orderItems,
+      total
+    }, {
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error('Order error details:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
+    throw error;
+  }
+};
