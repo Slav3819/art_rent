@@ -36,7 +36,7 @@ urlpatterns = [
     path('basket/<int:pk>/', BasketDetailAPIView.as_view(), name='basket-detail'),
     path('basket/clear/', ClearBasketAPIView.as_view(), name='basket-clear'),
     path('api/orders/', OrderCreateView.as_view(), name='order-create'),
-    path('api/orders/list/', OrderListView.as_view(), name='order-list'),
+    path('api/orders_list/', OrderListView.as_view(), name='order-list'),
     path('api/orders/<int:pk>/', OrderDetailView.as_view(), name='order-detail'),
     path('api/orders/<int:pk>/status/', OrderStatusUpdateView.as_view(), name='order-status-update'),
 ]

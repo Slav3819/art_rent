@@ -53,7 +53,10 @@ class OrderListView(APIView):
             orders = Order.objects.filter(user=user).order_by('-created_at')
 
         serializer = OrderSerializer(orders, many=True)
-        return Response(serializer.data)
+        response = Response(serializer.data)
+        response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+        response['Access-Control-Allow-Credentials'] = 'true'
+        return response
 
 class OrderDetailView(APIView):
     def get(self, request, pk):

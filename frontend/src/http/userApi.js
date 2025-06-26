@@ -34,3 +34,19 @@ export const logout = async () => {
         throw error;
     }
 };
+
+export const ordersUser = async () => {
+    try {
+        const response = await $authHost.get('api/orders_list/', {
+            withCredentials: true,
+            headers: { 'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            }
+        });
+        return response
+    } catch (error) {
+        console.error('Logout error:', error);
+        throw error;
+    }
+     
+}

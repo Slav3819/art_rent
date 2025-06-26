@@ -43,3 +43,4 @@ export const orderSuccess = async (customerInfo, orderItems, total) => {
     throw error;
   }
 };
+
