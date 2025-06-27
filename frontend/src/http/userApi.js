@@ -50,3 +50,16 @@ export const ordersUser = async () => {
     }
      
 }
+
+export const infoUser = async (data) => {
+    console.log(data)
+    try {
+        const response = await $host.patch('/user', data, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error updating user info:', error);
+        throw error;
+    }
+};

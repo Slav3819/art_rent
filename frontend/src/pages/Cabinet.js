@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ordersUser, check } from '../http/userApi';
+import { ordersUser, check, infoUser } from '../http/userApi';
 import { 
   Container, 
   Row, 
@@ -58,7 +58,8 @@ const Cabinet = () => {
 
   const handleProfileSave = () => {
     setIsEditing(false);
-    
+    console.log(profile)
+    infoUser(profile)
     // API запрос на сохранение данных
   };
 
