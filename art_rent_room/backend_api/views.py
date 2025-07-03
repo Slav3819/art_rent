@@ -8,6 +8,9 @@ from rest_framework import generics, status, permissions
 from rest_framework.exceptions import AuthenticationFailed, PermissionDenied
 from rest_framework.response import Response
 from .models import Order
+from .models import Favorite
+from .serializer import FavoriteSerializer
+from rest_framework.exceptions import AuthenticationFailed
 from .authentication import get_user_from_token
 from users.models import User
 from django.conf import settings
@@ -236,3 +239,64 @@ class ClearBasketAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class FavoriteView(APIView):
+    def get(self, request):
+        """
+        Получить список избранных устройств
+        Для staff - все избранные, для обычных пользователей - только свои
+        """
+        try:
+            user = get_user_from_token(request)
+        except AuthenticationFailed as e:
+            return Response({'detail': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
+        if user.is_staff:
+            favorites = Favorite.objects.all()
+        else:
+            favorites = Favorite.objects.filter(user=user)
+
+        serializer = FavoriteSerializer(favorites, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        """
+        Добавить устройство в избранное
+        Требует параметра 'device' в теле запроса
+        """
+        try:
+            user = get_user_from_token(request)
+        except AuthenticationFailed as e:
+            return Response({'detail': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
+        device_id = request.data.get('device')
+        if not device_id:
+            return Response({'detail': 'Device ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        device = get_object_or_404(DeviceRent, id=device_id)
+
+        favorite, created = Favorite.objects.get_or_create(
+            user=user,
+            device=device,
+        )
+
+        serializer = FavoriteSerializer(favorite)
+        return Response(serializer.data,
+                       status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
+
+    def delete(self, request):
+        """
+        Удалить устройство из избранных по ID устройства
+        Требует параметра 'device_id' в теле запроса
+        """
+        try:
+            user = get_user_from_token(request)
+        except AuthenticationFailed as e:
+            return Response({'detail': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
+        device_id = request.data.get('device_id')
+        if not device_id:
+            return Response({'detail': 'Device ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        favorite = get_object_or_404(Favorite, user=user, device_id=device_id)
+        favorite.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

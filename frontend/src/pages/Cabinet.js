@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { ordersUser, check, infoUser } from '../http/userApi';
+import { observer } from 'mobx-react-lite';
+import { ordersUser, check, infoUser, favoriteUser, favoriteDelete } from '../http/userApi';
 import { 
   Container, 
   Row, 
@@ -25,19 +26,16 @@ import {
 } from 'react-icons/fa';
 import './Cabinet.css'; // Создадим отдельный файл стилей
 
-const Cabinet = () => {
+const Cabinet =  observer(() => {
   const [activeTab, setActiveTab] = useState('profile');
   const [profile, setProfile] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [favorites, setFavorites] = useState([]);
   const [error, setError] = useState(null);
   const [notifications, setNotifications] = useState(true);
 
-  const favorites = [
-    { id: 1, name: 'Товар 1', price: 50 },
-    { id: 2, name: 'Товар 2', price: 75 },
-  ];
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -45,6 +43,8 @@ const Cabinet = () => {
         const res = await check();
         setProfile(res)
         const response = await ordersUser();
+        const favorite = await favoriteUser();
+        setFavorites(favorite.data)
         setOrders(response.data);
       } catch (err) {
         setError('Ошибка загрузки заказов');
@@ -58,9 +58,7 @@ const Cabinet = () => {
 
   const handleProfileSave = () => {
     setIsEditing(false);
-    console.log(profile)
     infoUser(profile)
-    // API запрос на сохранение данных
   };
 
   const Status = (status) => {
@@ -74,6 +72,17 @@ const Cabinet = () => {
   const dateCreate = (date_create) => {
     return new Date(date_create).toLocaleDateString('ru-RU')
   } 
+
+  const handleDeleteFavorite = async (deviceId) => {
+  if (!window.confirm("Удалить из избранного?")) return;
+  
+  try {
+    await favoriteDelete(deviceId);
+    setFavorites(favorites.filter(item => item.device_details.id !== deviceId));
+  } catch (error) {
+    console.error("Ошибка при удалении:", error);
+  }
+};
 
   return (
     <Container className="cabinet-container">
@@ -282,15 +291,18 @@ const Cabinet = () => {
                         <Col key={item.id}>
                           <Card className="favorite-card h-100">
                             <Card.Body className="text-center">
-                              <Card.Title className="favorite-title">{item.name}</Card.Title>
+                              <Card.Title className="favorite-title">{item.device_details.title}</Card.Title>
                               <Card.Text className="favorite-price">
-                                {item.price} BYN
+                                {item.device_details.price} BYN
                               </Card.Text>
                               <div className="d-flex justify-content-center gap-2">
                                 <Button variant="primary" size="sm">
                                   В корзину
                                 </Button>
-                                <Button variant="outline-danger" size="sm">
+                                <Button 
+                                  variant="outline-danger" 
+                                  size="sm" 
+                                  onClick={() => handleDeleteFavorite(item.device_details.id)}>
                                   <Trash />
                                 </Button>
                               </div>
@@ -349,6 +361,6 @@ const Cabinet = () => {
       </Row>
     </Container>
   );
-};
+});
 
 export default Cabinet;

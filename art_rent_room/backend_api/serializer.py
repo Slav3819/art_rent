@@ -70,10 +70,20 @@ class UserRentSerializer(serializers.ModelSerializer):
 
 
 class DeviceRentSerializer(serializers.ModelSerializer):
+    is_favorite = serializers.SerializerMethodField()
+
     class Meta:
         model = DeviceRent
-        fields = '__all__'
+        fields = ['id', 'title', 'img', 'desc', 'category', 'price', 'is_favorite']
 
+    def get_is_favorite(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return Favorite.objects.filter(
+                user=request.user,
+                device=obj
+            ).exists()
+        return False
 
 class BasketSerializer(serializers.ModelSerializer):
     device = DeviceRentSerializer()  # Вложенный сериализатор
@@ -82,4 +92,29 @@ class BasketSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class FavoriteSerializer(serializers.ModelSerializer):
+    device_details = serializers.SerializerMethodField()
 
+    class Meta:
+        model = Favorite
+        fields = ['id', 'device', 'device_details', 'created_at']
+        read_only_fields = ['user', 'created_at']
+
+    def get_device_details(self, obj):
+        device = obj.device
+        return {
+            'id': device.id,
+            'title': device.title,
+            'price': device.price,
+            'image': device.img,
+            'category': device.category
+        }
+
+    def validate(self, data):
+        user = self.context['request'].user
+        device = data.get('device')
+
+        if Favorite.objects.filter(user=user, device=device).exists():
+            raise serializers.ValidationError("Этот товар уже в избранном")
+
+        return data

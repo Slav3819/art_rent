@@ -112,3 +112,30 @@ class OrderItem(models.Model):
     @property
     def total_price(self):
         return self.price * self.quantity
+
+class Favorite(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='favorites',
+        verbose_name='Пользователь'
+    )
+    device = models.ForeignKey(
+        DeviceRent,
+        on_delete=models.CASCADE,
+        related_name='favorited_by',
+        verbose_name='Устройство'
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата добавления'
+    )
+
+    class Meta:
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранные товары'
+        unique_together = ('user', 'device')  # Запрещает дублирование
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user.username} - {self.device.title}"

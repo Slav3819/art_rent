@@ -20,7 +20,11 @@ from django.urls import re_path as url
 from backend_api.views import *
 from django.urls import path
 from users.views import RegisterView, LoginView, UserView, LogoutView
+from rest_framework.routers import DefaultRouter
 
+#
+# router = DefaultRouter()
+# router.register(r'api/favorites', FavoriteViewSet, basename='favorite')
 
 
 urlpatterns = [
@@ -39,4 +43,7 @@ urlpatterns = [
     path('api/orders_list/', OrderListView.as_view(), name='order-list'),
     path('api/orders/<int:pk>/', OrderDetailView.as_view(), name='order-detail'),
     path('api/orders/<int:pk>/status/', OrderStatusUpdateView.as_view(), name='order-status-update'),
+    path('api/orders/<int:pk>/', OrderDetailView.as_view(), name='order-detail'),
+    path('api/favorites/', FavoriteView.as_view(), name='favorites-list'),
+
 ]

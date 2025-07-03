@@ -51,6 +51,39 @@ export const ordersUser = async () => {
      
 }
 
+export const favoriteUser = async () => {
+    try {
+        const response = await $authHost.get('api/favorites/', {
+            withCredentials: true,
+            headers: { 'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            }
+        });
+        return response
+    } catch (error) {
+        console.error('Logout error:', error);
+        throw error;
+    }
+     
+}
+
+export const favoriteDelete = async (id_device) => {
+    try {
+        const response = await $authHost.delete('api/favorites/', {
+            data: { device_id: id_device }, // Передаём ID устройства в теле запроса
+            headers: { 
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting favorite:', error);
+        throw error;
+    }
+};
+
 export const infoUser = async (data) => {
     console.log(data)
     try {
