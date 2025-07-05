@@ -25,6 +25,7 @@ import {
   FaBell as Bell
 } from 'react-icons/fa';
 import './Cabinet.css'; // Создадим отдельный файл стилей
+import { useNavigate } from 'react-router-dom';
 
 const Cabinet =  observer(() => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -296,14 +297,14 @@ const Cabinet =  observer(() => {
                                 {item.device_details.price} BYN
                               </Card.Text>
                               <div className="d-flex justify-content-center gap-2">
-                                <Button variant="primary" size="sm">
+                                {/* <Button variant="primary" size="sm">
                                   В корзину
-                                </Button>
+                                </Button> */}
                                 <Button 
                                   variant="outline-danger" 
                                   size="sm" 
                                   onClick={() => handleDeleteFavorite(item.device_details.id)}>
-                                  <Trash />
+                                  Удалить
                                 </Button>
                               </div>
                             </Card.Body>

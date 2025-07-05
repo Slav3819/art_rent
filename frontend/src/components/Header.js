@@ -6,7 +6,8 @@ import { observer } from 'mobx-react-lite';
 import { logout } from '../http/userApi';
 
 
-const showOrders = (props) => {
+
+const showOrders = (props) => { 
   let summa = 0
   props.orders.forEach(element => {
     summa += Number.parseFloat(element.price)
@@ -34,19 +35,19 @@ const Header = (props) => {
   let [cartOpen, setCartOpen] = useState(false)
   const {user} = useContext(Context)
 
-
-
   const logOut = () => {
-    logout()
-    user.setUser({})
-    user.setIsAuth(false)
-  }
+  logout();
+  user.setUser({});
+  user.setIsAuth(false);
+  window.location.href = '/';
+}
   
   return (
     <header>
         <div >
             <span className='logo'> <a href="/" >Art Rent</a> </span>
             <ul className='nav' >
+                <li> <a href="/">Главная</a></li>
                 <li> <a href="/about">Про нас</a></li>
                 <li> <a href="/contact">Контакты</a></li>
                 <li> {user.isAuth ?
