@@ -14,19 +14,19 @@ export class Categories extends Component {
                     name: 'дрель'
                 },
                 {
-                    key: 'ts',
+                    key: 'sma',
                     name: 'ушм'
                 },
                 {
-                    key: 'tс',
+                    key: 'kosa',
                     name: 'Косилки'
                 },
                 {
-                    key: 'gz',
+                    key: 'shur',
                     name: 'Гайковерты'
                 },
                 {
-                    key: 'pf',
+                    key: 'hammer',
                     name: 'Перфораторы'
                 },
                 

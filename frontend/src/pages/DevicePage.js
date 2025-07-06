@@ -134,7 +134,7 @@ const favoriteToDelete = async (id) => {
         </div>
 
         <div className={styles.infoContainer}>
-          <h1 className={styles.title}>{currentDevice.name}</h1>
+          <h1 className={styles.title}>{currentDevice.title}</h1>
           
           <div className={styles.priceSection}>
             <span className={styles.price}>{currentDevice.price} BYN</span>
@@ -150,7 +150,7 @@ const favoriteToDelete = async (id) => {
 
           <div className={styles.description}>
             <h3>Описание</h3>
-            <p>{currentDevice.description || 'Описание отсутствует'}</p>
+            <p>{currentDevice.desc || 'Описание отсутствует'}</p>
           </div>
 
           <div className={styles.characteristics}>
