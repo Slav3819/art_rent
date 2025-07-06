@@ -84,6 +84,24 @@ export const favoriteDelete = async (id_device) => {
     }
 };
 
+export const favoriteAdd = async (id) => {
+    try {
+        const response = await $authHost.post('api/favorites/', {
+            device: id , // Передаём ID устройства в теле запроса
+            headers: { 
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error add favorite:', error);
+        throw error;
+    }
+};
+
+
 export const infoUser = async (data) => {
     console.log(data)
     try {

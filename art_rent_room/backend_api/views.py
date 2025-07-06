@@ -4,16 +4,14 @@ from .serializer import UserRentSerializer, DeviceRentSerializer, BasketSerializ
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
-from rest_framework import generics, status, permissions
-from rest_framework.exceptions import AuthenticationFailed, PermissionDenied
+from rest_framework import status
 from rest_framework.response import Response
 from .models import Order
 from .models import Favorite
 from .serializer import FavoriteSerializer
 from rest_framework.exceptions import AuthenticationFailed
 from .authentication import get_user_from_token
-from users.models import User
-from django.conf import settings
+
 from .serializer import (
     OrderCreateSerializer,
     OrderSerializer,
@@ -169,17 +167,11 @@ class BasketAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        """
-        Получить содержимое корзины пользователя
-        """
         baskets = Basket.objects.filter(user=request.user)
         serializer = BasketSerializer(baskets, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        """
-        Добавить устройство в корзину
-        """
         device_id = request.data.get('device')
         device = get_object_or_404(DeviceRent, id=device_id)
 
@@ -202,17 +194,13 @@ class BasketDetailAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def delete(self, request, pk):
-        """
-        Удалить устройство из корзины
-        """
+
         basket_item = get_object_or_404(Basket, pk=pk, user=request.user)
         basket_item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def patch(self, request, pk):
-        """
-        Обновить количество устройства в корзине
-        """
+
         basket_item = get_object_or_404(Basket, pk=pk, user=request.user)
         quantity = request.data.get('quantity')
 
@@ -232,19 +220,14 @@ class ClearBasketAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def delete(self, request):
-        """
-        Очистить всю корзину пользователя
-        """
+
         Basket.objects.filter(user=request.user).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class FavoriteView(APIView):
     def get(self, request):
-        """
-        Получить список избранных устройств
-        Для staff - все избранные, для обычных пользователей - только свои
-        """
+
         try:
             user = get_user_from_token(request)
         except AuthenticationFailed as e:
@@ -259,10 +242,7 @@ class FavoriteView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        """
-        Добавить устройство в избранное
-        Требует параметра 'device' в теле запроса
-        """
+
         try:
             user = get_user_from_token(request)
         except AuthenticationFailed as e:
@@ -284,10 +264,7 @@ class FavoriteView(APIView):
                        status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
 
     def delete(self, request):
-        """
-        Удалить устройство из избранных по ID устройства
-        Требует параметра 'device_id' в теле запроса
-        """
+
         try:
             user = get_user_from_token(request)
         except AuthenticationFailed as e:

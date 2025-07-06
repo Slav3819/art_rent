@@ -25,7 +25,6 @@ import {
   FaBell as Bell
 } from 'react-icons/fa';
 import './Cabinet.css'; // Создадим отдельный файл стилей
-import { useNavigate } from 'react-router-dom';
 
 const Cabinet =  observer(() => {
   const [activeTab, setActiveTab] = useState('profile');

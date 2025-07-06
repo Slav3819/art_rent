@@ -4,14 +4,16 @@ import { observer } from 'mobx-react-lite';
 import { Context } from '../index';
 import { device } from '../http/deviceApi';
 import styles from './DevicePage.module.css';
+import { favoriteUser, favoriteDelete, favoriteAdd } from '../http/userApi'
 
 const DevicePage = observer(() => {
-  const { items } = useContext(Context);
+  const { user, items } = useContext(Context);
   const { id } = useParams();
   const navigate = useNavigate();
   const [currentDevice, setCurrentDevice] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [fav, setFav] = useState()
 
   useEffect(() => {
     const fetchDevice = async () => {
@@ -31,10 +33,40 @@ const DevicePage = observer(() => {
         setLoading(false);
       }
     };
+
+    const fetchFavorites = async () => {
+      if (user.isAuth)
+        try {
+          const resFav = await favoriteUser()
+          setFav(resFav.data)
+        } catch (err) {
+          console.error('Ошибка при загрузке списка:', err);
+          setError('Произошла ошибка при загрузке данных');
+        }
+      }
+
+    fetchFavorites();
+
     fetchDevice();
   }, [id, items]);
 
-  
+  const favoriteToAdd = async (id) => {
+  try {
+    await favoriteAdd(id);
+    setFav(prev => [...prev, { device: id }]); // Добавляем устройство в избранное
+  } catch (err) {
+    console.error('Ошибка при добавлении в избранное:', err);
+  }
+}
+
+const favoriteToDelete = async (id) => {
+  try {
+    await favoriteDelete(id);
+    setFav(prev => prev.filter(item => item.device !== id)); // Удаляем устройство из избранного
+  } catch (err) {
+    console.error('Ошибка при удалении из избранного:', err);
+  }
+}
 
   const addToOrder = (item) => {
   const isInArray = items.isOrders.some(el => el.id === item.id);
@@ -144,6 +176,32 @@ const DevicePage = observer(() => {
               onClick={() => addToOrder(currentDevice)}
               >Добавить в корзину</button>
               }
+
+          {user.isAuth ? (
+            fav?.some(el => el.device === currentDevice.id) ? (
+              <button 
+                className={styles.addToCartButton} 
+                onClick={() => favoriteToDelete(currentDevice.id)}
+              >
+                Удалить из избранного
+              </button>
+            ) : (
+              <button 
+                className={styles.addToCartButton} 
+                onClick={() => favoriteToAdd(currentDevice.id)}
+              >
+                Добавить в избранное
+              </button>
+            )
+          ) : (
+            <button 
+              className={styles.addToCartButton} 
+              onClick={() => navigate('/login')}
+            >
+              Войти
+            </button>
+          )}
+             
 
         </div>
       </div>
