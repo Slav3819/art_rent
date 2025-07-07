@@ -8,15 +8,42 @@ from rest_framework import status
 from rest_framework.response import Response
 from .models import Order
 from .models import Favorite
+from .models import ContactMessage
 from .serializer import FavoriteSerializer
 from rest_framework.exceptions import AuthenticationFailed
 from .authentication import get_user_from_token
-
 from .serializer import (
     OrderCreateSerializer,
     OrderSerializer,
-    OrderStatusSerializer
+    OrderStatusSerializer,
+    ContactMessageSerializer
 )
+from rest_framework import generics
+class ContactMessageCreateView(generics.CreateAPIView):
+    queryset = ContactMessage.objects.all()
+    serializer_class = ContactMessageSerializer
+
+    def get(self, request):
+        output = [
+            {
+                "name": output.name,
+                "email": output.email,
+                "message": output.message,
+                "is_processed": output.is_processed,
+            } for output in ContactMessage.objects.all()
+        ]
+        return Response(output)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            {'success': 'Сообщение успешно отправлено'},
+            status=status.HTTP_201_CREATED,
+            headers=headers
+        )
 
 class OrderCreateView(APIView):
     def post(self, request):

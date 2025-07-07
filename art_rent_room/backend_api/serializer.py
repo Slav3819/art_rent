@@ -1,6 +1,12 @@
 from rest_framework import serializers
 from .models import *
 
+class ContactMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactMessage
+        fields = ['id', 'name', 'email', 'message', 'created_at', 'is_processed']
+        read_only_fields = ['id', 'created_at', 'is_processed']
+
 
 class OrderItemSerializer(serializers.ModelSerializer):
     img = serializers.CharField(source='image', required=False)
