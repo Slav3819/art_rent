@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import './Contact.css'; // Подключаем файл стилей
+import { contactMessage } from '../http/userApi';
+import './Contact.css';
 
 export class Contact extends Component {
   constructor(props) {
@@ -18,8 +19,7 @@ export class Contact extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    //добавить логику отправки формы
-    console.log('Форма отправлена:', this.state);
+    contactMessage(this.state)
     alert('Сообщение отправлено!');
     this.setState({ name: '', email: '', message: '' });
   };

@@ -1,6 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 import { $authHost, $host } from "./index";
 
+
 export const registration = async (name, email, password) => {
     const {data} = await $host.post('api/registration', {name, email, password});
     return jwtDecode(data.token);
@@ -17,7 +18,7 @@ export const check = async () => {
     try {
         const {data} = await $authHost.get('api/user', {
             withCredentials: true
-        });;
+        });
         return data
     } catch (error) {
         console.error('Auth check error:', error);
@@ -103,9 +104,20 @@ export const favoriteAdd = async (id) => {
 
 
 export const infoUser = async (data) => {
-    console.log(data)
     try {
         const response = await $host.patch('/user', data, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error updating user info:', error);
+        throw error;
+    }
+};
+
+export const contactMessage = async (data) => {
+    try {
+        const response = await $host.post('api/contact/', data, {
             withCredentials: true
         });
         return response.data;
