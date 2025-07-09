@@ -273,10 +273,14 @@ async def show_order_details(callback: types.CallbackQuery):
         await callback.answer("Заказ не найден")
         return
 
+    # Отладочная информация
+    debug_log(f"Текущий статус заказа: {order['status']}")
+    debug_log(f"Доступные статусы: {OrderStatus.__dict__}")
+
     # Форматируем дату
     created_at = order['created_at'].strftime("%d.%m.%Y %H:%M")
 
-    # Формируем сообщение с деталями заказа
+    # Формируем сообщение
     order_info = (
         f"📋 Заказ #{order['id']}\n\n"
         f"👤 Клиент: {order['customer_name']}\n"
@@ -288,7 +292,6 @@ async def show_order_details(callback: types.CallbackQuery):
         f"🛍 Состав заказа:\n"
     )
 
-    # Добавляем информацию о товарах
     for index, item in enumerate(order['items'], start=1):
         order_info += (
             f"\n{index}. {item['title']}\n"
@@ -297,48 +300,51 @@ async def show_order_details(callback: types.CallbackQuery):
             f"   Артикул: {item['product_id']}\n"
         )
 
-    # Создаем кнопки для управления статусом
-    builder = InlineKeyboardBuilder()
+    # Создаем кнопки
+    buttons = []
 
     if order['status'] != OrderStatus.CONFIRMED:
-        builder.add(InlineKeyboardButton(
+        buttons.append(InlineKeyboardButton(
             text="✅ Подтвердить",
             callback_data=f"confirm_{order['id']}"
         ))
 
     if order['status'] != OrderStatus.IN_PROGRESS:
-        builder.add(InlineKeyboardButton(
+        buttons.append(InlineKeyboardButton(
             text="🛠 В работу",
             callback_data=f"progress_{order['id']}"
         ))
 
     if order['status'] != OrderStatus.DELIVERED:
-        builder.add(InlineKeyboardButton(
+        buttons.append(InlineKeyboardButton(
             text="🚚 Доставлен",
             callback_data=f"deliver_{order['id']}"
         ))
 
     if order['status'] != OrderStatus.CANCELLED:
-        builder.add(InlineKeyboardButton(
+        buttons.append(InlineKeyboardButton(
             text="❌ Отменить",
             callback_data=f"cancel_{order['id']}"
         ))
 
-    builder.add(InlineKeyboardButton(
+    buttons.append(InlineKeyboardButton(
         text="🔙 Назад",
         callback_data="back_to_orders"
     ))
 
-    builder.adjust(2, repeat=True)
+    # Формируем клавиатуру
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        buttons[i:i + 2] for i in range(0, len(buttons), 2)
+    ])
 
     try:
         await callback.message.edit_text(
             order_info,
-            reply_markup=builder.as_markup()
+            reply_markup=keyboard
         )
     except Exception as e:
-        debug_log(f"Ошибка при отправке сообщения: {e}")
-        await callback.answer("Произошла ошибка при отображении информации о заказе")
+        debug_log(f"Ошибка отправки сообщения: {e}")
+        await callback.answer("Ошибка отображения кнопок")
 
     await callback.answer()
 

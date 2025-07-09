@@ -77,7 +77,7 @@ class Order(models.Model):
     status = models.CharField(
         max_length=20,
         choices=ORDER_STATUS_CHOICES,
-        default='in_progress',
+        default='Новый',
         verbose_name='Статус заказа'
     )
     total = models.DecimalField(
