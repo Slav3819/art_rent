@@ -4,8 +4,7 @@ import Order from './Order'
 import { Context } from '../index';
 import { observer } from 'mobx-react-lite';
 import { logout } from '../http/userApi';
-
-
+import Search from './Search';
 
 const showOrders = (props) => { 
   let summa = 0
@@ -46,6 +45,7 @@ const Header = (props) => {
     <header>
         <div >
             <span className='logo'> <a href="/" >Art Rent</a> </span>
+            {/* <Search /> */}
             <ul className='nav' >
                 <li> <a href="/">Главная</a></li>
                 <li> <a href="/about">Про нас</a></li>

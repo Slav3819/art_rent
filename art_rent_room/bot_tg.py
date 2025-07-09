@@ -61,7 +61,6 @@ def is_admin(user_id: int) -> bool:
 
 # Функции для работы с заказами
 async def get_order_details(order_id: int):
-    """Получает информацию о заказе и его товарах"""
     conn = await get_db_connection()
     try:
         order_query = """
@@ -201,7 +200,7 @@ async def send_new_contact_message_notification(message_id: int, name: str, emai
             f"📧 Email: {email}\n"
             f"📅 Дата: {created_at_str}\n"
             f"📝 Сообщение:\n{message_text}\n\n"
-            f"Используйте /contacts для просмотра всех сообщений"
+            f"Используйте /unprocessed для просмотра необработанных сообщений"
         )
 
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
@@ -299,7 +298,8 @@ async def cmd_start(message: types.Message):
             "Панель администратора\n\n"
             "Доступные команды:\n"
             "/orders - Управление заказами\n"
-            "/contacts - Сообщения от клиентов\n"
+            "/contacts - Все сообщения\n"
+            "/unprocessed - Необработанные сообщения\n"
             "/help - Помощь"
         )
     else:
@@ -316,8 +316,8 @@ async def cmd_help(message: types.Message):
             "/new - Новые заказы\n"
             "/confirmed - Подтвержденные заказы\n"
             "/delivered - Доставленные заказы\n"
-            "/cancelled - Отмененные заказы\n"
-            "/contacts - Сообщения от клиентов\n"
+            "/cancelled - Отмененные заказы\n\n"
+            "/contacts - Все сообщения\n"
             "/unprocessed - Необработанные сообщения"
         )
 
@@ -520,18 +520,16 @@ async def back_to_orders(callback: types.CallbackQuery):
 
 
 # Команды для работы с контактными сообщениями
-@dp.message(Command("contacts", "unprocessed"))
+@dp.message(Command("contacts"))
 async def cmd_contacts(message: types.Message):
     if not is_admin(message.from_user.id):
         await message.answer("Доступ запрещен.")
         return
 
-    processed_filter = None if message.text == "/contacts" else ContactStatus.UNPROCESSED
-    messages = await get_contact_messages(processed_filter)
+    messages = await get_contact_messages()
 
     if not messages:
-        status = "необработанных" if processed_filter is not None else ""
-        await message.answer(f"Нет {status} сообщений от клиентов.")
+        await message.answer("Нет сообщений от клиентов.")
         return
 
     builder = InlineKeyboardBuilder()
@@ -544,7 +542,33 @@ async def cmd_contacts(message: types.Message):
     builder.adjust(1)
 
     await message.answer(
-        "Список сообщений от клиентов:",
+        "Все сообщения от клиентов:",
+        reply_markup=builder.as_markup()
+    )
+
+
+@dp.message(Command("unprocessed"))
+async def cmd_unprocessed(message: types.Message):
+    if not is_admin(message.from_user.id):
+        await message.answer("Доступ запрещен.")
+        return
+
+    messages = await get_contact_messages(processed_filter=ContactStatus.UNPROCESSED)
+
+    if not messages:
+        await message.answer("Нет необработанных сообщений.")
+        return
+
+    builder = InlineKeyboardBuilder()
+    for msg in messages:
+        builder.add(InlineKeyboardButton(
+            text=f"❌ #{msg['id']} - {msg['name']} ({msg['email']})",
+            callback_data=f"contact_{msg['id']}"
+        ))
+    builder.adjust(1)
+
+    await message.answer(
+        "Необработанные сообщения:",
         reply_markup=builder.as_markup()
     )
 
@@ -570,7 +594,7 @@ async def show_contact_message(callback: types.CallbackQuery):
             return
 
         created_at = message['created_at'].strftime("%d.%m.%Y %H:%M")
-        status = "Обработано" if message['is_processed'] else "Не обработано"
+        status = "✅ Обработано" if message['is_processed'] else "❌ Не обработано"
 
         msg_text = (
             f"📩 Сообщение #{message['id']}\n\n"
@@ -591,10 +615,14 @@ async def show_contact_message(callback: types.CallbackQuery):
                 )
             ])
 
+        # Определяем откуда пришли - из общего списка или необработанных
+        is_from_unprocessed = "Необработанные" in callback.message.text
+        back_callback = "back_to_unprocessed" if is_from_unprocessed else "back_to_contacts"
+
         keyboard.inline_keyboard.append([
             InlineKeyboardButton(
                 text="🔙 Назад",
-                callback_data="back_to_contacts"
+                callback_data=back_callback
             )
         ])
 
@@ -617,8 +645,47 @@ async def process_contact_message(callback: types.CallbackQuery):
     result = await mark_message_as_processed(message_id)
 
     if result:
-        await callback.answer("Сообщение отмечено как обработанное")
-        await show_contact_message(callback)
+        # Обновляем сообщение с новым статусом
+        conn = await get_db_connection()
+        try:
+            query = """
+            SELECT id, name, email, message, created_at, is_processed 
+            FROM backend_api_contactmessage 
+            WHERE id = $1
+            """
+            message = await conn.fetchrow(query, message_id)
+
+            created_at = message['created_at'].strftime("%d.%m.%Y %H:%M")
+            msg_text = (
+                f"📩 Сообщение #{message['id']}\n\n"
+                f"👤 Имя: {message['name']}\n"
+                f"📧 Email: {message['email']}\n"
+                f"📅 Дата: {created_at}\n"
+                f"🔄 Статус: ✅ Обработано\n\n"
+                f"📝 Сообщение:\n{message['message']}"
+            )
+
+            # Определяем откуда пришли - из общего списка или необработанных
+            is_from_unprocessed = "Необработанные" in callback.message.text
+            back_callback = "back_to_unprocessed" if is_from_unprocessed else "back_to_contacts"
+
+            keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(
+                    text="🔙 Назад",
+                    callback_data=back_callback
+                )]
+            ])
+
+            await callback.message.edit_text(
+                msg_text,
+                reply_markup=keyboard
+            )
+            await callback.answer("Сообщение отмечено как обработанное")
+        except Exception as e:
+            debug_log(f"Ошибка при обновлении сообщения: {e}")
+            await callback.answer("Ошибка при обновлении", show_alert=True)
+        finally:
+            await conn.close()
     else:
         await callback.answer("Ошибка при обновлении статуса", show_alert=True)
 
@@ -630,6 +697,16 @@ async def back_to_contacts(callback: types.CallbackQuery):
         return
 
     await cmd_contacts(callback.message)
+    await callback.answer()
+
+
+@dp.callback_query(lambda c: c.data == "back_to_unprocessed")
+async def back_to_unprocessed(callback: types.CallbackQuery):
+    if not is_admin(callback.from_user.id):
+        await callback.answer("Доступ запрещен.")
+        return
+
+    await cmd_unprocessed(callback.message)
     await callback.answer()
 
 
