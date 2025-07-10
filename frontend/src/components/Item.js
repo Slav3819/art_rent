@@ -57,7 +57,7 @@ const Item = observer(({ item, onShowItem, onAdd }) => {
             className={`favorite-heart ${isFavorite ? 'active' : ''} ${loading ? 'loading' : ''}`} 
             onClick={handleToggleFavorite}
           >
-            {loading ? '...' : '♥'}
+            {loading ? '...' : '❤'}
           </div>
         )}
       </div>

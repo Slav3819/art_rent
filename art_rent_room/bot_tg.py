@@ -417,10 +417,10 @@ async def show_order_details(callback: types.CallbackQuery):
                 callback_data=f"cancel_{order['id']}"
             ))
 
-        buttons.append(InlineKeyboardButton(
-            text="🔙 Назад",
-            callback_data="back_to_orders"
-        ))
+        # buttons.append(InlineKeyboardButton(
+        #     text="🔙 Назад",
+        #     callback_data="back_to_orders"
+        # ))
 
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [buttons[0], buttons[1]] if len(buttons) > 1 else [buttons[0]],
@@ -619,12 +619,12 @@ async def show_contact_message(callback: types.CallbackQuery):
         is_from_unprocessed = "Необработанные" in callback.message.text
         back_callback = "back_to_unprocessed" if is_from_unprocessed else "back_to_contacts"
 
-        keyboard.inline_keyboard.append([
-            InlineKeyboardButton(
-                text="🔙 Назад",
-                callback_data=back_callback
-            )
-        ])
+        # keyboard.inline_keyboard.append([
+        #     InlineKeyboardButton(
+        #         text="🔙 Назад",
+        #         callback_data=back_callback
+        #     )
+        # ])
 
         await callback.message.edit_text(
             msg_text,
@@ -669,17 +669,14 @@ async def process_contact_message(callback: types.CallbackQuery):
             is_from_unprocessed = "Необработанные" in callback.message.text
             back_callback = "back_to_unprocessed" if is_from_unprocessed else "back_to_contacts"
 
-            keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(
-                    text="🔙 Назад",
-                    callback_data=back_callback
-                )]
-            ])
+            # keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            #     [InlineKeyboardButton(
+            #         text="🔙 Назад",
+            #         callback_data=back_callback
+            #     )]
+            # ])
 
-            await callback.message.edit_text(
-                msg_text,
-                reply_markup=keyboard
-            )
+
             await callback.answer("Сообщение отмечено как обработанное")
         except Exception as e:
             debug_log(f"Ошибка при обновлении сообщения: {e}")
