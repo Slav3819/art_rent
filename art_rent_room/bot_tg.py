@@ -181,7 +181,7 @@ async def mark_message_as_processed(message_id: int):
 # Уведомления
 async def send_status_notification(order_id: int, customer_name: str, old_status: str, new_status: str):
     try:
-        message = (f"📢 Изменение статуса заказа!\n"
+        message = (f"📢 Новый заказ!\n"
                    f"ID: {order_id}\n"
                    f"Клиент: {customer_name}\n"
                    f"Статус: {old_status} → {new_status}")
