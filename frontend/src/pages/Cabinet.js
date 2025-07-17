@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { observer } from 'mobx-react-lite';
+import { Context } from '../index';
 import { ordersUser, check, infoUser, favoriteUser, favoriteDelete } from '../http/userApi';
 import { 
   Container, 
@@ -35,6 +36,8 @@ const Cabinet =  observer(() => {
   const [favorites, setFavorites] = useState([]);
   const [error, setError] = useState(null);
   const [notifications, setNotifications] = useState(true);
+  const {items} = useContext(Context);
+  
 
 
   useEffect(() => {
@@ -68,6 +71,18 @@ const Cabinet =  observer(() => {
       return false
     }
   }
+  
+  useEffect(() => {
+    localStorage.setItem('cartItems', JSON.stringify(items.isOrders));
+  }, [items.isOrders]);
+
+  const addToOrder = (item) => {
+    const isInArray = items.isOrders.some(el => el.id === item.id);
+    console.log(item)
+    if (!isInArray) {
+      items.setOrders([...items.isOrders, item]);
+    }
+  };
 
   const dateCreate = (date_create) => {
     return new Date(date_create).toLocaleDateString('ru-RU')
@@ -296,9 +311,13 @@ const Cabinet =  observer(() => {
                                 {item.device_details.price} BYN
                               </Card.Text>
                               <div className="d-flex justify-content-center gap-2">
-                                {/* <Button variant="primary" size="sm">
+                                <Button 
+                                variant="primary" 
+                                size="sm"
+                                onClick={() => addToOrder(item.device_details)}
+                                >
                                   В корзину
-                                </Button> */}
+                                </Button>
                                 <Button 
                                   variant="outline-danger" 
                                   size="sm" 

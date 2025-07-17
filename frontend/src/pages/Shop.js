@@ -62,6 +62,7 @@ const Shop = observer(() => {
 
   const addToOrder = (item) => {
     const isInArray = items.isOrders.some(el => el.id === item.id);
+    console.log(item)
     if (!isInArray) {
       items.setOrders([...items.isOrders, item]);
     }

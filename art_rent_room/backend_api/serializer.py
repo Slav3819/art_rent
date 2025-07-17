@@ -112,7 +112,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
             'id': device.id,
             'title': device.title,
             'price': device.price,
-            'image': device.img,
+            'img': device.img,
             'category': device.category
         }
 
